@@ -5,5 +5,6 @@ const ctrl = require('../controller/languages')
 router.get('/', ctrl.getAllLanguages)
 router.post('/', ctrl.addLanguage)
 router.get('/:id', ctrl.getOneLanguage)
+router.put('/:id', ctrl.updateLanguage)
 
 module.exports = router

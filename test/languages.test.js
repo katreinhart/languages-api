@@ -78,4 +78,53 @@ describe('Languages API', function() {
         })
     })
   })
+
+  describe('PUT /languages/:id', function() {
+    it('should update the given language if all data is present', function(done) {
+      chai.request(app)
+        .get('/languages')
+        .end((err, res) => {
+          expect(res.status).to.equal(200)
+          expect(res.body.data).to.be.an('array')
+          const language = res.body.data[0]
+          const id = language.id
+          const updatedData = {
+            ...language,
+            use: ["Scripting", "Web front end", "Back-end server"]
+          }
+          chai.request(app)
+            .put(`/languages/${id}`)
+            .send(updatedData)
+            .end((err, res) => {
+              expect(res.status).to.equal(200)
+              expect(res.body.data).to.be.an('object')
+              expect(res.body.data.use).to.deep.equal(updatedData.use)
+              done()
+            })
+        })
+    })
+    it('should return errors if data is missing', function(done) {
+      chai.request(app)
+      .get('/languages')
+      .end((err, res) => {
+        expect(res.status).to.equal(200)
+        expect(res.body.data).to.be.an('array')
+        const language = res.body.data[0]
+        const id = language.id
+        const updatedData = {
+          name: "JavaScript"
+        }
+        chai.request(app)
+          .put(`/languages/${id}`)
+          .send(updatedData)
+          .end((err, res) => {
+            expect(res.status).to.equal(400)
+            expect(res.body.error).to.be.an('object')
+            expect(res.body.error.errors).to.be.an('array')
+            expect(res.body.error.errors).to.include('Use is required')
+            done()
+          })
+      })
+    })
+  })
 })
