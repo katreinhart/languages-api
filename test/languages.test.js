@@ -127,4 +127,43 @@ describe('Languages API', function() {
       })
     })
   })
+
+  describe('DELETE /languages/:id', function() {
+    it('should delete the given resource if a matching one is found', function(done) {
+      chai.request(app)
+        .get('/languages')
+        .end((err, res) => {
+          expect(res.status).to.equal(200)
+          expect(res.body.data).to.be.an('array')
+          const language = res.body.data[0]
+          const numLanguages = res.body.data.length
+          const id = language.id
+          chai.request(app)
+            .delete(`/languages/${id}`)
+            .end((err, res) => {
+              expect(res.status).to.equal(200)
+              expect(res.body.data).to.be.an('object')
+              expect(res.body.data.name).to.equal(language.name)
+              expect(res.body.data.use).to.equal(language.use)
+              chai.request(app)
+                .get(`/languages`)
+                .end((err, res) => {
+                  expect(res.status).to.equal(200)
+                  expect(res.body.data).to.be.an('array')
+                  expect(res.body.data.length).to.equal(numLanguages - 1)
+                  done()
+                })
+            })
+          })
+      })
+      it('should return an error if there is no matching ID', function(done) {
+        chai.request(app)
+          .delete('/languages/999')
+          .end((req, res) => {
+            expect(res.status).to.equal(404)
+            expect(res.error.message).to.be.ok
+            done()
+          })
+      })
+  })
 })

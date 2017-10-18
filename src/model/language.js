@@ -90,9 +90,21 @@ function updateLanguage(id, body) {
   }
 }
 
+function deleteLanguage(id) {
+  const language = languages.find(lang=> lang.id === id)
+  if(!language) {
+    return { error: { status: 404, message: `Language ${id} not found` }}
+  } else {
+    const index = languages.indexOf(language)
+    languages.splice(index, 1)
+    return language
+  }
+}
+
 module.exports = {
   getLanguages,
   getOneLanguage,
   addLanguage,
-  updateLanguage
+  updateLanguage,
+  deleteLanguage
 }

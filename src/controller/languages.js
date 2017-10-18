@@ -37,9 +37,21 @@ const updateLanguage = (req, res, next) => {
   }
 }
 
+const deleteLanguage = (req, res, next) => {
+  const id = req.params.id
+  const response = model.deleteLanguage(id)
+  if(response.error) {
+    const error = response.error
+    next({ error })
+  } else {
+    res.status(200).json({ data: response })
+  }
+}
+
 module.exports = {
   getAllLanguages,
   getOneLanguage,
   addLanguage,
-  updateLanguage
+  updateLanguage,
+  deleteLanguage
 }
